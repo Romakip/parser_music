@@ -37,7 +37,6 @@ class ParsingMusicAlbumsCommand extends Command
         $this->addArgument('path_music', InputArgument::REQUIRED, 'Укажите путь к каталогу с музыкой');
     }
 
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -46,8 +45,12 @@ class ParsingMusicAlbumsCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->pathToMusic = $input->getArgument('path_music');
+        if (!file_exists($this->pathToMusic)) {
+            $output->writeln("Дирректории {$this->pathToMusic} не существует");
+            return Command::INVALID;
+        }
         $this->bus->dispatch(new ParsMusicAlbumMessage($this->pathToMusic));
-        $output->writeln('Начинается парсинг музыкального альбома по пути: ' . $this->pathToMusic);
+        $output->writeln("Начинается парсинг музыкального альбома по пути: {$this->pathToMusic}");
         return Command::SUCCESS;
     }
 }

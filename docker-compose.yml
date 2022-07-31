@@ -13,6 +13,15 @@ services:
     expose:
       - 8000
 
+
+  migration:
+    build: ./
+    restart: always
+    depends_on:
+      - db
+      - application
+    entrypoint: "php bin/console doctrine:schema:create -n"
+
   db:
     image: postgres:11
     container_name: db_container

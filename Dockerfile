@@ -24,6 +24,3 @@ COPY . .
 COPY --from=composer:2.2.7 /usr/bin/composer /usr/local/bin/composer
 
 RUN composer install
-
-CMD "/usr/bin/php bin/console doctrine:schema:create -n"
-#CMD "/usr/bin/php bin/console doctrine:migrations:migrate -n"
