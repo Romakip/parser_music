@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  application:
+    build: ./
+    container_name: project_container
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    entrypoint: "php bin/console messenger:consume async -vv"
+    expose:
+      - 8000
+
+  db:
+    image: postgres:11
+    container_name: db_container
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sundwich
+      - POSTGRES_DB=pars_music
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
