@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\MusicAlbumRepository;
+use App\Repository\ExecutorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=MusicAlbumRepository::class)
+ * @ORM\Entity(repositoryClass=ExecutorRepository::class)
  */
-class MusicAlbum
+class Executor
 {
     /**
      * @ORM\Id
@@ -25,7 +25,7 @@ class MusicAlbum
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Track::class, mappedBy="music_album")
+     * @ORM\ManyToMany(targetEntity=Track::class, mappedBy="executors")
      */
     private $tracks;
 
@@ -63,7 +63,7 @@ class MusicAlbum
     {
         if (!$this->tracks->contains($track)) {
             $this->tracks[] = $track;
-            $track->setMusicAlbum($this);
+            $track->addExecutor($this);
         }
 
         return $this;
@@ -72,10 +72,7 @@ class MusicAlbum
     public function removeTrack(Track $track): self
     {
         if ($this->tracks->removeElement($track)) {
-            // set the owning side to null (unless already changed)
-            if ($track->getMusicAlbum() === $this) {
-                $track->setMusicAlbum(null);
-            }
+            $track->removeExecutor($this);
         }
 
         return $this;

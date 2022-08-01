@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Entity\MusicAlbum;
+use App\Entity\Track;
 use App\Repository\MusicAlbumRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,22 +35,30 @@ class ShowAlbumsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $musicAlbums = $this->entityManager
-            ->getRepository(MusicAlbum::class)
+        $tracks = $this->entityManager
+            ->getRepository(Track::class)
             ->findAll();
 
-        if (!count($musicAlbums)) {
-            $output->writeln("В базе не нашлось альбомов");
+        if (!count($tracks)) {
+            $output->writeln("В базе не нашлось музыкальных треков");
         }
 
-        foreach ($musicAlbums as $album) {
+        foreach ($tracks as $track) {
+            $genre = $track->getGenre() ? $track->getGenre() : 'Неизвестен';
+
+            // Получаем всех исполнителей трека
+            $executors = $track->getExecutors() ?
+                implode(', ', $track->getExecutors()->map(function($executor) { return $executor->getName(); })->getValues()) : 'Неизвестны';
+
             $output->writeln(
-                "Название альбома: '{$album->getName()}',
-                Исполнитель: '{$album->getExecutor()}',
-                Год: '{$album->getYear()}',
-                Жанр: '{$album->getGenre()}'
+                "Название трека: '{$track->getTitle()}',
+                Исполнители: '{$executors}',
+                Музыкальный альбом: '{$track->getMusicAlbum()->getName()}'
+                Жанр: '{$genre}'
+                Год: '{$track->getYear()}',
              ");
         }
+
         return Command::SUCCESS;
     }
 }

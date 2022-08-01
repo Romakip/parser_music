@@ -2,15 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\MusicAlbumRepository;
+use App\Repository\GenreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=MusicAlbumRepository::class)
+ * @ORM\Entity(repositoryClass=GenreRepository::class)
  */
-class MusicAlbum
+class Genre
 {
     /**
      * @ORM\Id
@@ -25,13 +25,13 @@ class MusicAlbum
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Track::class, mappedBy="music_album")
+     * @ORM\OneToMany(targetEntity=Track::class, mappedBy="genre")
      */
     private $tracks;
 
     public function __construct()
     {
-        $this->tracks = new ArrayCollection();
+        $this->treks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,14 +56,14 @@ class MusicAlbum
      */
     public function getTracks(): Collection
     {
-        return $this->tracks;
+        return $this->treks;
     }
 
     public function addTrack(Track $track): self
     {
-        if (!$this->tracks->contains($track)) {
-            $this->tracks[] = $track;
-            $track->setMusicAlbum($this);
+        if (!$this->treks->contains($track)) {
+            $this->treks[] = $track;
+            $track->setGenre($this);
         }
 
         return $this;
@@ -73,8 +73,8 @@ class MusicAlbum
     {
         if ($this->tracks->removeElement($track)) {
             // set the owning side to null (unless already changed)
-            if ($track->getMusicAlbum() === $this) {
-                $track->setMusicAlbum(null);
+            if ($track->getGenre() === $this) {
+                $track->setGenre(null);
             }
         }
 
